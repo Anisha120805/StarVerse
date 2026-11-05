@@ -1,3 +1,4 @@
+
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
@@ -6,7 +7,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
-const PORT = 5000;
+
+// Render deployment port / Local development port
+const PORT = process.env.PORT || 5000;
 
 // =========================
 // MIDDLEWARE
@@ -24,6 +27,7 @@ const db = mysql.createConnection({
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "starverse",
+  port: Number(process.env.DB_PORT) || 3306
 });
 
 // =========================
@@ -43,13 +47,13 @@ db.connect((err) => {
   console.log("STARVERSE BACKEND SERVER");
   console.log("=================================");
   console.log("MySQL Database Connected");
-  console.log("Server running on http://localhost:5000");
+  console.log(`Server running on port ${PORT}`);
   console.log("---------------------------------");
-  console.log("Actor API   : http://localhost:5000/api/actor");
-  console.log("Movies API  : http://localhost:5000/api/movies");
-  console.log("Career API  : http://localhost:5000/api/career");
-  console.log("Awards API  : http://localhost:5000/api/awards");
-  console.log("Gallery API : http://localhost:5000/api/gallery");
+  console.log("Actor API   : /api/actor");
+  console.log("Movies API  : /api/movies");
+  console.log("Career API  : /api/career");
+  console.log("Awards API  : /api/awards");
+  console.log("Gallery API : /api/gallery");
   console.log("=================================");
 });
 
@@ -60,7 +64,8 @@ db.connect((err) => {
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "STARVERSE BACKEND IS RUNNING",
+    project: "StarVerse",
+    message: "STARVERSE BACKEND IS RUNNING"
   });
 });
 
@@ -80,14 +85,13 @@ app.get("/api/actor", (req, res) => {
 
       return res.status(500).json({
         success: false,
-        message: "Failed to fetch actor data",
-        error: err.message,
+        message: "Failed to fetch actor data"
       });
     }
 
     res.json({
       success: true,
-      data: results,
+      data: results
     });
   });
 });
@@ -120,14 +124,13 @@ app.get("/api/movies", (req, res) => {
 
       return res.status(500).json({
         success: false,
-        message: "Failed to fetch movies",
-        error: err.message,
+        message: "Failed to fetch movies"
       });
     }
 
     res.json({
       success: true,
-      data: results,
+      data: results
     });
   });
 });
@@ -154,14 +157,13 @@ app.get("/api/career", (req, res) => {
 
       return res.status(500).json({
         success: false,
-        message: "Failed to fetch career timeline",
-        error: err.message,
+        message: "Failed to fetch career timeline"
       });
     }
 
     res.json({
       success: true,
-      data: results,
+      data: results
     });
   });
 });
@@ -190,14 +192,13 @@ app.get("/api/awards", (req, res) => {
 
       return res.status(500).json({
         success: false,
-        message: "Failed to fetch awards",
-        error: err.message,
+        message: "Failed to fetch awards"
       });
     }
 
     res.json({
       success: true,
-      data: results,
+      data: results
     });
   });
 });
@@ -225,14 +226,13 @@ app.get("/api/gallery", (req, res) => {
 
       return res.status(500).json({
         success: false,
-        message: "Failed to fetch gallery",
-        error: err.message,
+        message: "Failed to fetch gallery"
       });
     }
 
     res.json({
       success: true,
-      data: results,
+      data: results
     });
   });
 });
@@ -251,8 +251,8 @@ app.get("/api", (req, res) => {
       "/api/movies",
       "/api/career",
       "/api/awards",
-      "/api/gallery",
-    ],
+      "/api/gallery"
+    ]
   });
 });
 
@@ -264,7 +264,7 @@ app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
-    path: req.originalUrl,
+    path: req.originalUrl
   });
 });
 
@@ -272,8 +272,8 @@ app.use((req, res) => {
 // START SERVER
 // =========================
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log("---------------------------------");
-  console.log(`StarVerse Backend listening on port ${PORT}`);
+  console.log(`StarVerse Backend running on port ${PORT}`);
   console.log("---------------------------------");
 });
